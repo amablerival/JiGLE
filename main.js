@@ -1,5 +1,5 @@
 import fileInputManager from "./modules/file-manager.js";
-import { initMap } from "./modules/map-manager.js";
+import { createMarker, initMap, resetMap } from "./modules/map-manager.js";
 
 const fileInput = document.getElementById("csvFileInput");
 const markers = [];
@@ -24,57 +24,29 @@ fileInput.addEventListener("change", e => {
 
 /**
  *
- * MAP & MARKERS
+ * GEOLOCATION
  *
  */
 // Geolocation and map initialization
-const successCallback = position => {
-  const {
-    coords: { latitude, longitude },
-  } = position;
-  console.log(position);
-  map = initMap(latitude, longitude);
-};
-const errorCallback = error => console.error(error);
-navigator.geolocation.getCurrentPosition(successCallback, errorCallback, {
-  timeout: 10000,
-});
-
-const createMarker = ({
-  macAdress,
-  ssid,
-  authMode,
-  firstSeen,
-  lat,
-  lng,
-  accuracy,
-}) => {
-  const fill = authMode === "[OPEN][ESS]" ? "#00ff00" : "#ff00ff";
-  const marker = L.circleMarker([lat, lng], {
-    fillColor: fill,
-    color: fill,
-  }).addTo(map);
-  marker.bindPopup(
-    `MAC: ${macAdress}<br>SSID: ${ssid}<br>Auth Mode: ${authMode}<br>LatLng: ${lat}, ${lng}<br>First Seen: ${firstSeen}<br>Accuracy: ${accuracy}m`
-  );
-  markers.push(marker);
-};
-
-const setMarkers = locations => {
-  locations.forEach(position => {
-    createMarker(position);
-  });
-};
-
-const resetMap = () => {
-  markers.forEach(marker => map.removeLayer(marker));
-};
+navigator.geolocation.getCurrentPosition(
+  ({ coords: { latitude, longitude } }) => {
+    console.log("Geolocation: ", latitude, longitude);
+    map = initMap(latitude, longitude); // map needs to be initialized after geolocation is obtained
+  },
+  error => console.error(error)
+);
 
 /**
  *
  * UI
  *
  */
+
+const setMarkers = locations => {
+  locations.forEach(position => {
+    createMarker(position, map, markers);
+  });
+};
 
 const fileInfo = document.getElementById("file-info");
 const setFileInfo = (filtered, total) => {
@@ -89,54 +61,37 @@ const setFileInfo = (filtered, total) => {
  *
  */
 
-// const filterCallback = (event) => {
-//   const value = event.target.value;
-//   let filteredLocations = [];
-//   switch (true) {
-//     case value === "open":
-//       filteredLocations = locations.filter(
-//         (loc) => loc.authMode === "[OPEN][ESS]"
-//       );
-//       break;
-//     case value === "closed":
-//       filteredLocations = locations.filter(
-//         (loc) => loc.authMode !== "[OPEN][ESS]"
-//       );
-//       break;
-//     case value === "all":
-//       filteredLocations = locations;
-//       break;
-//     case value.trim() !== "":
-//       const regex = new RegExp(value, "i");
-//       filteredLocations = locations.filter(
-//         (loc) => regex.test(loc.ssid) || regex.test(loc.macAdress)
-//       );
-//       break;
-//     default:
-//       filteredLocations = locations;
-//       break;
-//   }
-//   resetMap();
-//   setMarkers(filteredLocations);
-//   setFileInfo(filteredLocations.length, locations.length);
-// };
+const filterOpen = loc => loc.authMode === "[OPEN][ESS]";
+const filterClosed = loc => loc.authMode !== "[OPEN][ESS]";
+const regexFilter = regex => loc => regex.test(loc.ssid) || regex.test(loc.macAdress);
+const removeFilter = filter => {
+  const hasFilter = filters.find(filter);
+  if (hasFilter === -1) return;
+  filters.splice(filters.indexOf(hasFilter), 1);
+};
+
 const filterCallback = event => {
   const value = event.target.value;
-
-  if (value === "open") filters.push(loc => loc.authMode === "[OPEN][ESS]");
-  else if (value === "closed")
-    filters.push(loc => loc.authMode !== "[OPEN][ESS]");
-  else if (value === "all")
+  if (value === "open") {
+    removeFilter(filterClosed);
+    filters.push(filterOpen);
+  } else if (value === "closed") {
+    removeFilter(filterOpen);
+    filters.push(filterClosed);
+  } else if (value === "all")
     filters.length = 0; // Clear filters
   else if (value.trim() !== "") {
-    const regex = new RegExp(value, "i");
-    filters.push(loc => regex.test(loc.ssid) || regex.test(loc.macAdress));
+    const regex = new RegExp(value, iFlag.checked ? "i" : gFlag.checked ? "g" : "");
+    console.log(regex);
+    removeFilter(regexFilter(regex));
+    filters.push(regexFilter(regex));
   } else filters.length = 0; // Clear filters if input is empty
 
   const combined = combineFilters(...filters);
   const filteredLocations = locations.filter(combined);
+  console.log(filters);
 
-  resetMap();
+  resetMap(map, markers);
   setMarkers(filteredLocations);
   setFileInfo(filteredLocations.length, locations.length);
 };
@@ -149,3 +104,18 @@ const filterSelect = document.getElementById("networks");
 filterSelect.addEventListener("change", filterCallback);
 const pattern = document.getElementById("pattern");
 pattern.addEventListener("input", filterCallback);
+const iFlag = document.getElementById("i");
+const gFlag = document.getElementById("g");
+
+const clearButton = document.getElementById("reset");
+clearButton.addEventListener("click", () => {
+  filters.length = 0; // Clear filters
+  filterSelect.value = "all"; // Reset select
+  pattern.value = ""; // Clear regex input
+  iFlag.checked = false; // Uncheck i flag
+  gFlag.checked = false; // Uncheck g flag
+
+  resetMap(map, markers); // Clear map
+  setMarkers(locations); // Reset markers
+  setFileInfo(locations.length, locations.length); // Reset file info
+});

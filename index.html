@@ -23,26 +23,7 @@
       <div class="container">
         <input type="file" id="csvFileInput" accept=".csv" />
         <p id="file-info">Showing 0 networks</p>
-        <div id="regex-container">
-          <label for="pattern" id="pattern-label">
-            Regex Pattern: /<input
-              type="text"
-              id="pattern"
-              name="pattern"
-              placeholder="Enter your regex pattern"
-            />/
-          </label>
-          <!-- <div id="flags-container">
-            <p>Flags:</p>
-            <label for="i">
-              <input type="checkbox" name="flags" id="i" /> i
-            </label>
-            <label for="g">
-              <input type="checkbox" name="flags" id="g" /> g
-            </label>
-          </div> -->
-        </div>
-        <div>
+        <div class="container">
           <label class="options-label" for="networks"
             >Filter Map:
             <select name="networks" id="networks">
@@ -52,6 +33,23 @@
             </select>
           </label>
         </div>
+        <div id="container">
+          <label for="pattern" id="pattern-label">
+            Regex Pattern: /<input
+              type="text"
+              id="pattern"
+              name="pattern"
+              placeholder="Enter your regex pattern"
+            />/
+            <label for="i">
+              <input type="checkbox" name="flags" id="i" /> i
+            </label>
+            <label for="g">
+              <input type="checkbox" name="flags" id="g" /> g
+            </label>
+          </label>
+        </div>
+        <button id="reset">Clear Filters</button>
       </div>
     </section>
     <div id="map"></div>
