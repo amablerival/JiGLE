@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="main.js"></script>
+    <title>JiGLE</title>
+  </head>
+  <body>
+    <section id="search-section">
+      <div class="container">
+        <input type="file" id="csvFileInput" accept=".csv" />
+        <p id="file-info">Showing 0 networks</p>
+        <div id="regex-container">
+          <label for="pattern" id="pattern-label">
+            Regex Pattern: /<input
+              type="text"
+              id="pattern"
+              name="pattern"
+              placeholder="Enter your regex pattern"
+            />/
+          </label>
+          <!-- <div id="flags-container">
+            <p>Flags:</p>
+            <label for="i">
+              <input type="checkbox" name="flags" id="i" /> i
+            </label>
+            <label for="g">
+              <input type="checkbox" name="flags" id="g" /> g
+            </label>
+          </div> -->
+        </div>
+        <div>
+          <label class="options-label" for="networks"
+            >Filter Map:
+            <select name="networks" id="networks">
+              <option value="all">All</option>
+              <option value="open">OPEN</option>
+              <option value="closed">CLOSED</option>
+            </select>
+          </label>
+        </div>
+      </div>
+    </section>
+    <div id="map"></div>
+  </body>
+</html>
