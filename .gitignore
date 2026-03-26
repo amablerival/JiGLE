@@ -1,4 +1,4 @@
 data/
-.prettierc
+.prettierrc.json
 .vscode/
 .DS_Store
