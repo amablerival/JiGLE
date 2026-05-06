@@ -27,6 +27,7 @@ const filterLocations = data =>
     ssid: m["SSID"],
     authMode: m["AuthMode"],
     firstSeen: m["FirstSeen"],
+    rssi: m["RSSI"],
     lat: +m["CurrentLatitude"],
     lng: +m["CurrentLongitude"],
     accuracy: +m["AccuracyMeters"],

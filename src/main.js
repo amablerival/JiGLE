@@ -71,6 +71,8 @@ const removeFilter = filter => {
 };
 
 const filterCallback = event => {
+  console.log("filter");
+
   const value = event.target.value;
   if (value === "open") {
     removeFilter(filterClosed);
@@ -89,7 +91,6 @@ const filterCallback = event => {
 
   const combined = combineFilters(...filters);
   const filteredLocations = locations.filter(combined);
-  console.log(filters);
 
   resetMap(map, markers);
   setMarkers(filteredLocations);
@@ -100,6 +101,7 @@ const combineFilters =
   item =>
     filters.map(filter => filter(item)).every(x => x === true);
 
+// UI event listeners
 const filterSelect = document.getElementById("networks");
 filterSelect.addEventListener("change", filterCallback);
 const pattern = document.getElementById("pattern");
@@ -109,6 +111,8 @@ const gFlag = document.getElementById("g");
 
 const clearButton = document.getElementById("reset");
 clearButton.addEventListener("click", () => {
+  console.log("clear");
+
   filters.length = 0; // Clear filters
   filterSelect.value = "all"; // Reset select
   pattern.value = ""; // Clear regex input

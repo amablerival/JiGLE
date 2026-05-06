@@ -9,17 +9,19 @@ const initMap = (lat, lng) => {
 };
 
 const createMarker = (
-  { macAdress, ssid, authMode, firstSeen, lat, lng, accuracy },
+  { macAdress, ssid, authMode, firstSeen, rssi, lat, lng, accuracy },
   map,
   markers
 ) => {
   const fill = authMode === "[OPEN][ESS]" ? "#00ff00" : "#ff00ff";
   const marker = L.circleMarker([lat, lng], {
-    fillColor: fill,
+    fill: fill,
     color: fill,
+    radius: Math.log(100 / Math.abs(rssi)) * 100,
+    opacity: Math.log(100 / Math.abs(rssi)) * 100 * 0.2,
   }).addTo(map);
   marker.bindPopup(
-    `MAC: ${macAdress}<br>SSID: ${ssid}<br>Auth Mode: ${authMode}<br>LatLng: ${lat}, ${lng}<br>First Seen: ${firstSeen}<br>Accuracy: ${accuracy}m`
+    `MAC: ${macAdress}<br>SSID: ${ssid}<br>Auth Mode: ${authMode}<br>LatLng: ${lat}, ${lng}<br>First Seen: ${firstSeen}<br>RSSI: ${rssi}dBm`
   );
   markers.push(marker);
 };
