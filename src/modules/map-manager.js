@@ -13,12 +13,12 @@ const createMarker = (
   map,
   markers
 ) => {
-  const fill = authMode === "[OPEN][ESS]" ? "#00ff00" : "#ff00ff";
+  const fill = authMode === "[OPEN][ESS]" ? "rgb(0, 255, 94)" : "#b8010f";
   const marker = L.circleMarker([lat, lng], {
-    fill: fill,
     color: fill,
-    radius: Math.log(100 / Math.abs(rssi)) * 100,
-    opacity: Math.log(100 / Math.abs(rssi)) * 100 * 0.2,
+    fillColor: fill,
+    opacity: Math.log(100 / Math.abs(rssi)) * 100 + 0.5,
+    radius: Math.log(100 / Math.abs(rssi)) * 100 + 1,
   }).addTo(map);
   marker.bindPopup(
     `MAC: ${macAdress}<br>SSID: ${ssid}<br>Auth Mode: ${authMode}<br>LatLng: ${lat}, ${lng}<br>First Seen: ${firstSeen}<br>RSSI: ${rssi}dBm`

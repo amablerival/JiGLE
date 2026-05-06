@@ -19,11 +19,24 @@
     <title>JiGLE</title>
   </head>
   <body>
+    <div id="map"></div>
     <section id="search-section">
       <div class="container">
         <input type="file" id="csvFileInput" accept=".csv" />
         <p id="file-info">Showing 0 networks</p>
-        <div class="container">
+        <div class="child">
+          <label for="pattern" id="pattern-label">
+            Regex Pattern: /<input
+              type="text"
+              id="pattern"
+              name="pattern"
+              placeholder="Enter your regex pattern"
+            />/
+            <label for="i"> <input type="checkbox" name="flags" id="i" /> i </label>
+            <label for="g"> <input type="checkbox" name="flags" id="g" /> g </label>
+          </label>
+        </div>
+        <div class="child">
           <label class="options-label" for="networks"
             >Filter Map:
             <select name="networks" id="networks">
@@ -32,26 +45,9 @@
               <option value="closed">CLOSED</option>
             </select>
           </label>
+          <button id="reset">Clear Filters</button>
         </div>
-        <div id="container">
-          <label for="pattern" id="pattern-label">
-            Regex Pattern: /<input
-              type="text"
-              id="pattern"
-              name="pattern"
-              placeholder="Enter your regex pattern"
-            />/
-            <label for="i">
-              <input type="checkbox" name="flags" id="i" /> i
-            </label>
-            <label for="g">
-              <input type="checkbox" name="flags" id="g" /> g
-            </label>
-          </label>
-        </div>
-        <button id="reset">Clear Filters</button>
       </div>
     </section>
-    <div id="map"></div>
   </body>
 </html>
