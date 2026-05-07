@@ -30,6 +30,7 @@ const filterLocations = data =>
     rssi: m["RSSI"],
     lat: +m["CurrentLatitude"],
     lng: +m["CurrentLongitude"],
+    altitude: +m["AltitudeMeters"],
     accuracy: +m["AccuracyMeters"],
   }));
 

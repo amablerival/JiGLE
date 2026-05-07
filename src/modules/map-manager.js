@@ -2,8 +2,7 @@ const initMap = (lat, lng) => {
   const map = L.map("map", { preferCanvas: true }).setView([lat, lng], 15);
   L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
-    attribution:
-      '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
   }).addTo(map);
   return map;
 };
@@ -32,15 +31,16 @@ const colorFiller = key => {
 };
 
 const createMarker = (
-  { macAdress, ssid, authMode, firstSeen, rssi, lat, lng, accuracy },
+  { macAdress, ssid, authMode, firstSeen, rssi, lat, lng, accuracy, altitude },
   map,
   markers
 ) => {
   const fill = authMode === "[OPEN][ESS]" ? "rgb(0, 255, 94)" : "#b8010f";
   const marker = L.circleMarker([lat, lng], {
     color: colorFiller(authMode),
-    // fillColor: fill,
-    opacity: Math.log(100 / Math.abs(rssi)) * 100 + 0.5,
+    fillColor: colorFiller(authMode),
+    fillOpacity: Math.log(100 / Math.abs(rssi)) * 1.5,
+    weight: 0.5,
     radius: Math.abs(Math.log(100 / Math.abs(rssi))) * 440,
   }).addTo(map);
   marker.bindPopup(
