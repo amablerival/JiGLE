@@ -1,4 +1,13 @@
 import fileInputManager from "./modules/file-manager.js";
+import {
+  filterClosed,
+  filterOpen,
+  filterUnkown,
+  filterWEP,
+  filterWPA,
+  filterWPA2,
+  resetFilters,
+} from "./modules/filters.js";
 import { createMarker, initMap, resetMap } from "./modules/map-manager.js";
 
 const fileInput = document.getElementById("csvFileInput");
@@ -61,9 +70,10 @@ const setFileInfo = (filtered, total) => {
  *
  */
 
-const filterOpen = loc => loc.authMode === "[OPEN][ESS]";
-const filterClosed = loc => loc.authMode !== "[OPEN][ESS]";
-const regexFilter = regex => loc => regex.test(loc.ssid) || regex.test(loc.macAdress);
+const regexFilter =
+  regex =>
+  ({ ssid, macAdress }) =>
+    regex.test(ssid) || regex.test(macAdress);
 const removeFilter = filter => {
   const hasFilter = filters.find(filter);
   if (hasFilter === -1) return;
@@ -71,18 +81,28 @@ const removeFilter = filter => {
 };
 
 const filterCallback = event => {
-  console.log("filter");
-
   const value = event.target.value;
   if (value === "open") {
-    removeFilter(filterClosed);
+    resetFilters(filterOpen, removeFilter);
     filters.push(filterOpen);
   } else if (value === "closed") {
-    removeFilter(filterOpen);
+    resetFilters(filterClosed, removeFilter);
     filters.push(filterClosed);
   } else if (value === "all")
     filters.length = 0; // Clear filters
-  else if (value.trim() !== "") {
+  else if (value === "wep") {
+    resetFilters(filterWEP, removeFilter);
+    filters.push(filterWEP);
+  } else if (value === "wpa") {
+    resetFilters(filterWPA, removeFilter);
+    filters.push(filterWPA);
+  } else if (value === "wpa2") {
+    resetFilters(filterWPA2, removeFilter);
+    filters.push(filterWPA2);
+  } else if (value === "unknown") {
+    resetFilters(filterUnkown, removeFilter);
+    filters.push(filterUnkown);
+  } else if (value.trim() !== "") {
     const regex = new RegExp(value, iFlag.checked ? "i" : gFlag.checked ? "g" : "");
     console.log(regex);
     removeFilter(regexFilter(regex));
@@ -118,7 +138,6 @@ clearButton.addEventListener("click", () => {
   pattern.value = ""; // Clear regex input
   iFlag.checked = false; // Uncheck i flag
   gFlag.checked = false; // Uncheck g flag
-
   resetMap(map, markers); // Clear map
   setMarkers(locations); // Reset markers
   setFileInfo(locations.length, locations.length); // Reset file info
