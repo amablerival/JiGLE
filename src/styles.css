@@ -6,7 +6,6 @@ body {
   background-color: #01180e;
   color: white;
 }
-/* 180501 */
 
 gmp-map {
   height: 100%;
@@ -27,6 +26,10 @@ gmp-map {
   justify-content: space-between;
   align-items: center;
   gap: 5rem;
+}
+
+.leaflet-tile {
+  filter: hue-rotate(200deg) !important;
 }
 
 @media only screen and (max-width: 1000px) {
